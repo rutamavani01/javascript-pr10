@@ -1,0 +1,119 @@
+<center>
+    <h1>To-Do list</h1>
+    <table border="4">
+        <input type="hidden" id="editid">
+        <tr style="margin: 10px;">
+            <td style="margin: 10px;"><input type="text" id="list" placeholder="Add list"></td>
+            <td><input type="button" value="+" onclick="save()" id="addbtn">
+                <input type="button" value="submit" onclick="save()" id="submitbtn">
+            </td>
+        </tr>
+    </table>
+    <br><br>
+    <table border="4">
+        <tbody id="record"></tbody>
+        <tfoot>
+            <tr align="center">
+                <td colspan="3" style="padding: 10px;">
+                    <input type="button" onclick="cleardata" id="clearbtn" value="clear all data">
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</center>
+
+<script type="text/javascript">
+    let data = [];
+
+
+    const viewdata = () => {
+        document.getElementById('addbtn').style.display = "block";
+        document.getElementById('submitbtn').style.display = "none";
+
+        let record = JSON.parse(localStorage.getItem('user'));
+        let val = (record == null) ? [] : record
+        let tbl = "";
+
+        val.map((v) => {
+            const { userid, list } = v;
+            tbl += `
+                        <tr>
+                            <td>${list}</td>
+                           <td> <button onclick="deletedata(${userid})">delete</button>
+                                <button onclick="editdata(${userid})">edit</button>
+                            </td>  
+                        </tr>
+                        `
+        })
+        document.getElementById('record').innerHTML = tbl;
+    }
+    viewdata();
+
+    const save = () => {
+        let userid = document.getElementById('editid').value;
+        let list = document.getElementById('list').value;
+
+        let obj = {
+            userid: Math.floor(Math.random() * 10000),
+            list: list
+        }
+        if (userid) {
+            let item = JSON.parse(localStorage.getItem('user'));
+            let alldata = item.filter((v) => {
+                return v.userid == userid;
+            })
+            document.getElementById('list').value = alldata[0].list = list;
+            localStorage.setItem('user', JSON.stringify(item));
+            alert("are you sure! your data is update");
+            document.getElementById("editid").value = "";
+            viewdata();
+        } else {
+            if (localStorage.getItem('user') === null || localStorage.getItem('user') === undefined) {
+                data.push(obj);
+                localStorage.setItem('user', JSON.stringify(data));
+            } else {
+                let val = JSON.parse(localStorage.getItem('user'));
+                val.push(obj);
+                localStorage.setItem('user', JSON.stringify(val));
+            }
+            alert("your data succesfully insert");
+            viewdata();
+        }
+        document.getElementById('list').value = "";
+    }
+
+    const deletedata = (id) => {
+        let alldata = JSON.parse(localStorage.getItem('user'));
+        let ans = alldata.filter((val) => {
+            return val.userid != id;
+        })
+        localStorage.setItem('user', JSON.stringify(ans));
+        alert("user succesfully delete!");
+        viewdata();
+    }
+
+    const editdata = (id) => {
+        document.getElementById('addbtn').style.display = "none";
+        document.getElementById('submitbtn').style.display = "block";
+
+        let val = JSON.parse(localStorage.getItem('user'));
+        let ans = val.filter((v) => {
+            return v.userid == id;
+        })
+        document.getElementById('list').value = ans[0].list;
+        document.getElementById('editid').value = ans[0].userid;
+    }
+
+    const cleardata = () => {
+        let data = JSON.parse(localStorage.getItem('user'));
+
+        let ans = data.filter((val) => {
+            return val.list.value = "";
+        });
+        localStorage.setItem('user', JSON.stringify(ans));
+        alert("All users succesfully deleted");
+        viewdata();
+    }
+
+</script>
