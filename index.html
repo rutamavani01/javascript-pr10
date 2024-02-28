@@ -15,7 +15,7 @@
         <tfoot>
             <tr align="center">
                 <td colspan="3" style="padding: 10px;">
-                    <input type="button" onclick="cleardata" id="clearbtn" value="clear all data">
+                    <input type="button" onclick="cleardata()" id="clearbtn" value="clear all data">
                 </td>
             </tr>
         </tfoot>
@@ -25,7 +25,6 @@
 
 <script type="text/javascript">
     let data = [];
-
 
     const viewdata = () => {
         document.getElementById('addbtn').style.display = "block";
@@ -106,13 +105,8 @@
     }
 
     const cleardata = () => {
-        let data = JSON.parse(localStorage.getItem('user'));
-
-        let ans = data.filter((val) => {
-            return val.list.value = "";
-        });
-        localStorage.setItem('user', JSON.stringify(ans));
-        alert("All users succesfully deleted");
+        localStorage.removeItem('user');
+        alert("All data successfully deleted");
         viewdata();
     }
 
